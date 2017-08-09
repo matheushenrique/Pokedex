@@ -26,10 +26,36 @@ class PokemonDetailedVC: UIViewController {
     @IBOutlet weak var nameLbl: UILabel!
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(pokemon.name)
+//        print(pokemon.name)
         nameLbl.text = pokemon.name.capitalized
+        let img = UIImage(named: "\(pokemon.pokedexId)")
+        mainImg.image = img
+        currentEvoImg.image = img
+        pokedexLbl.text = "\(pokemon.pokedexId)"
+        pokemon.downloadPokemonDetails {
+            // whatever we write here will only be called after the network call is completed
+            self.updateUI()
+        }
     }
-
+    
+    func updateUI() {
+        attackLbl.text = pokemon.attack
+        defenseLbl.text = pokemon.defense
+        weightLbl.text = pokemon.weight
+        heightLbl.text = pokemon.height
+        typeLbl.text = pokemon.type
+        descriptionLbl.text = pokemon.description
+        
+        if pokemon.nextEvolutionId == ""{
+            evoLbl.text = "No evolutions"
+            nextEvoImg.isHidden = true
+        }else{
+            nextEvoImg.isHidden = false
+            nextEvoImg.image = UIImage(named: pokemon.nextEvolutionId)
+            let str = "Next evolution: \(pokemon.nextEvolutionName) - LVL \(pokemon.nextEvolutionId)"
+            evoLbl.text = str
+        }
+    }
     @IBAction func backPressed(_ sender: UIButton) {
         dismiss(animated:true, completion: nil)
     }
